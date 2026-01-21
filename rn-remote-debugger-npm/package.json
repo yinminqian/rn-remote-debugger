@@ -1,0 +1,35 @@
+{
+  "name": "rn-remote-debugger",
+  "version": "1.0.0",
+  "description": "Remote debugger for React Native - intercept console logs and network requests",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "README.md"
+  ],
+  "keywords": [
+    "react-native",
+    "debugger",
+    "console",
+    "network",
+    "remote",
+    "websocket",
+    "debug"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yinminqian/rn-remote-debugger.git"
+  },
+  "homepage": "https://github.com/yinminqian/rn-remote-debugger#readme",
+  "bugs": {
+    "url": "https://github.com/yinminqian/rn-remote-debugger/issues"
+  },
+  "peerDependencies": {
+    "react-native": ">=0.60.0"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  }
+}

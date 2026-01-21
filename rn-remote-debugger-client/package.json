@@ -1,0 +1,109 @@
+{
+  "name": "rn-remote-debugger-app",
+  "version": "1.0.0",
+  "description": "Remote Console Debugger for React Native",
+  "main": "main.cjs",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "start": "electron .",
+    "build": "vite build",
+    "pack": "electron-builder --dir",
+    "dist": "npm run build && electron-builder",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:linux": "npm run build && electron-builder --linux",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "build": {
+    "appId": "com.rnremotedebugger.app",
+    "productName": "RN Remote Debugger",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.cjs",
+      "preload.cjs",
+      "dist/**/*",
+      "package.json"
+    ],
+    "extraFiles": [],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "build/icon.icns",
+      "identity": null
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ],
+      "window": {
+        "width": 540,
+        "height": 380
+      }
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Development",
+      "icon": "build/icon.png"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "your-username",
+      "repo": "rn-remote-debugger"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.2",
+    "electron": "^40.0.0",
+    "electron-builder": "26.4.0"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^6.1.0",
+    "@microlink/react-json-view": "^1.27.1",
+    "antd": "^6.2.1",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-resizable-panels": "^4.4.1",
+    "vite": "^7.3.1",
+    "ws": "^8.19.0"
+  },
+  "packageManager": "yarn@4.12.0+sha512.f45ab632439a67f8bc759bf32ead036a1f413287b9042726b7cc4818b7b49e14e9423ba49b18f9e06ea4941c1ad062385b1d8760a8d5091a1a31e5f6219afca8"
+}
