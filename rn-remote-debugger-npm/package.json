@@ -1,6 +1,6 @@
 {
   "name": "rn-remote-debugger",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Remote debugger for React Native - intercept console logs and network requests",
   "main": "index.js",
   "files": [
