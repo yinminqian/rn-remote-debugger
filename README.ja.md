@@ -49,6 +49,23 @@ yarn add rn-remote-debugger
 npx rn-remote-debugger-create
 ```
 
+プロジェクトルートに `rn-remote-debug.js` ファイルが生成されます：
+
+```javascript
+if (__DEV__) {
+  module.exports = {
+    host: '192.168.1.100', // パソコンの IP（自動検出）
+    port: 8989,
+    enableConsole: true,
+    enableNetwork: true
+  }
+} else {
+  module.exports = {}
+}
+```
+
+> **iOS 注意**：`host` がパソコンの IP アドレスと一致していることを確認してください。
+
 ### ステップ 4：エントリーファイルでインポート
 
 React Native プロジェクトの `index.js` の先頭に追加：
