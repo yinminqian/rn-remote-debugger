@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
-import { Layout, Tabs, Card, Tag, Button, Empty, Typography, Space, Input, message, Modal } from 'antd';
+import { useState, useEffect, useMemo, useRef } from 'react';
+import { Layout, Tabs, Card, Tag, Button, Empty, Typography, Space, Input, message, Modal, Tooltip } from 'antd';
 import { ClearOutlined, SearchOutlined, CopyOutlined, CodeOutlined, ApiOutlined, LinkOutlined, AndroidOutlined } from '@ant-design/icons';
 import ReactJson from '@microlink/react-json-view';
 import { Panel, Group, Separator, useDefaultLayout } from 'react-resizable-panels';
@@ -57,8 +57,11 @@ function App() {
     });
   };
 
+  const wsRef = useRef(null);
+
   useEffect(() => {
     const ws = new WebSocket('ws://localhost:8989');
+    wsRef.current = ws;
 
     ws.onopen = () => {
       setStatus('connected');
@@ -92,7 +95,10 @@ function App() {
       setStatus('waiting');
     };
 
-    return () => ws.close();
+    return () => {
+      wsRef.current = null;
+      ws.close();
+    };
   }, []);
 
   const handleNetwork = (data) => {
@@ -133,6 +139,11 @@ function App() {
     setSelectedRequest(null);
     setSearchText('');
     console.clear();
+    // 同时通知主进程清空环形缓冲区，保持 UI 和 MCP 数据一致
+    const ws = wsRef.current;
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ channel: 'session', type: 'clear' }));
+    }
   };
 
   const generateCurl = (req) => {
@@ -469,68 +480,91 @@ function App() {
     }
   ];
 
+  const isMac = typeof navigator !== 'undefined' && /Mac/i.test(navigator.platform);
+  const mcpEndpoint = `http://localhost:${window.location.port && window.location.port !== '5173' ? window.location.port : '8989'}/mcp`;
+
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <div style={{
-        height: '28px',
-        background: '#f5f5f5',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        WebkitAppRegion: 'drag',
-        borderBottom: '1px solid #e0e0e0',
-        position: 'relative',
-      }}>
-        {/* 中间标题 */}
-        <span style={{ color: '#666', fontSize: '14px', fontWeight: '500' }}>
-          Remote Console Debugger
-        </span>
-        
-        {/* 右侧状态和按钮 */}
-        <div style={{ 
-          position: 'absolute',
-          right: '12px',
+      <div
+        className="titlebar"
+        style={{
+          height: '44px',
+          background: '#f5f5f5',
           display: 'flex',
           alignItems: 'center',
-          gap: '10px',
-          WebkitAppRegion: 'no-drag',
-        }}>
-          {status === 'connected' ? (
-            <LinkOutlined style={{ fontSize: '16px', color: '#52c41a' }} />
-          ) : (
-            <ApiOutlined style={{ fontSize: '16px', color: '#ff4d4f' }} />
-          )}
-          <div
-            onClick={showAndroidTip}
-            style={{ 
-              color: '#666', 
-              cursor: 'pointer', 
-              padding: '4px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <AndroidOutlined style={{ fontSize: '16px' }} />
-          </div>
-          <div
-            onClick={(e) => {
-              e.stopPropagation();
-              if (window.electron && window.electron.toggleDevTools) {
-                window.electron.toggleDevTools();
-              } else {
-                console.log('electron.toggleDevTools not available');
-              }
-            }}
-            style={{ 
-              color: '#666', 
-              cursor: 'pointer', 
-              padding: '4px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <CodeOutlined style={{ fontSize: '16px' }} />
-          </div>
+          paddingLeft: isMac ? '84px' : '16px',
+          paddingRight: '12px',
+          borderBottom: '1px solid #e0e0e0',
+          gap: '12px',
+        }}
+      >
+        {/* 左侧：标题 */}
+        <span style={{ color: '#333', fontSize: '13px', fontWeight: 600, whiteSpace: 'nowrap' }}>
+          Remote Console Debugger
+        </span>
+
+        {/* 中间：可拖拽空白区 */}
+        <div style={{ flex: 1 }} />
+
+        {/* 右侧：状态和操作 */}
+        <div
+          className="titlebar-no-drag"
+          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+        >
+          <Tooltip title={status === 'connected' ? 'RN 已连接' : '等待 RN 连接'}>
+            {status === 'connected' ? (
+              <LinkOutlined style={{ fontSize: '16px', color: '#52c41a' }} />
+            ) : (
+              <ApiOutlined style={{ fontSize: '16px', color: '#ff4d4f' }} />
+            )}
+          </Tooltip>
+
+          <Tooltip title={`点击复制 MCP 端点: ${mcpEndpoint}`}>
+            <Button
+              size="small"
+              type="text"
+              style={{ fontSize: '12px', fontFamily: 'monospace', color: '#666' }}
+              onClick={() => {
+                navigator.clipboard.writeText(mcpEndpoint);
+                message.success('MCP 端点已复制');
+              }}
+            >
+              MCP
+            </Button>
+          </Tooltip>
+
+          <Tooltip title="清空日志与请求">
+            <Button
+              size="small"
+              type="text"
+              icon={<ClearOutlined style={{ fontSize: '14px' }} />}
+              onClick={clearAll}
+            />
+          </Tooltip>
+
+          <Tooltip title="Android 连接提示">
+            <Button
+              size="small"
+              type="text"
+              icon={<AndroidOutlined style={{ fontSize: '14px' }} />}
+              onClick={showAndroidTip}
+            />
+          </Tooltip>
+
+          <Tooltip title="切换 DevTools">
+            <Button
+              size="small"
+              type="text"
+              icon={<CodeOutlined style={{ fontSize: '14px' }} />}
+              onClick={() => {
+                if (window.electron && window.electron.toggleDevTools) {
+                  window.electron.toggleDevTools();
+                } else {
+                  console.log('electron.toggleDevTools not available');
+                }
+              }}
+            />
+          </Tooltip>
         </div>
       </div>
 

@@ -1,5 +1,8 @@
 # Dependencies
 node_modules/
+.yarn/
+.pnp.*
+package-lock.json
 
 # Build outputs
 dist/

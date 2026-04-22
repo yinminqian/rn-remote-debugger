@@ -4,6 +4,21 @@
   box-sizing: border-box;
 }
 
+/* Custom titlebar: whole bar is draggable except interactive children */
+.titlebar {
+  -webkit-app-region: drag;
+  app-region: drag;
+  user-select: none;
+}
+
+.titlebar-no-drag,
+.titlebar button,
+.titlebar a,
+.titlebar input {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+
 /* 自定义滚动条样式 */
 ::-webkit-scrollbar {
   width: 8px;
