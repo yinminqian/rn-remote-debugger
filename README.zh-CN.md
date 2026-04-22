@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/rn-remote-debugger"><img src="https://img.shields.io/npm/v/rn-remote-debugger?color=5865F2&style=flat-square" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/rn-remote-debugger"><img src="https://img.shields.io/npm/dm/rn-remote-debugger?color=5865F2&style=flat-square" alt="npm downloads"></a>
-  <a href="https://github.com/niceyoo/rn-remote-debugger/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License"></a>
+  <a href="https://github.com/yinminqian/rn-remote-debugger/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License"></a>
 </p>
 
 <p align="center">
@@ -31,7 +31,27 @@
 
 ### 第一步：下载桌面应用
 
-从 [Releases](https://github.com/niceyoo/rn-remote-debugger/releases) 下载并安装 DMG。
+前往 [Releases 页面](https://github.com/yinminqian/rn-remote-debugger/releases/latest) 下载最新 DMG：
+
+| 机器 | 文件 |
+| --- | --- |
+| Apple Silicon（M1/M2/M3/M4） | `RN-Remote-Debugger-<version>-arm64.dmg` |
+| Intel | `RN-Remote-Debugger-<version>.dmg` |
+
+**首次启动（一次性）**：DMG 未做 Apple 签名，macOS Gatekeeper 会拦一次。
+
+1. 打开 DMG → 把 **RN Remote Debugger** 拖到 `Applications` 文件夹。
+2. 双击 **首次启动修复.command**（就在同一个 DMG 里）。若被系统拦截，**右键 → 打开 → 确认**即可。
+3. 之后就能正常双击启动了。
+
+<details>
+<summary>偏好命令行？</summary>
+
+```bash
+xattr -cr "/Applications/RN Remote Debugger.app"
+```
+
+</details>
 
 ### 第二步：安装 npm 包
 

@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/rn-remote-debugger"><img src="https://img.shields.io/npm/v/rn-remote-debugger?color=5865F2&style=flat-square" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/rn-remote-debugger"><img src="https://img.shields.io/npm/dm/rn-remote-debugger?color=5865F2&style=flat-square" alt="npm downloads"></a>
-  <a href="https://github.com/niceyoo/rn-remote-debugger/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License"></a>
+  <a href="https://github.com/yinminqian/rn-remote-debugger/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License"></a>
 </p>
 
 <p align="center">
@@ -31,7 +31,27 @@ React Native が Hermes エンジンを採用して以来、React Native Debugge
 
 ### ステップ 1：デスクトップアプリをダウンロード
 
-[Releases](https://github.com/niceyoo/rn-remote-debugger/releases) から DMG をダウンロードしてインストール。
+[Releases ページ](https://github.com/yinminqian/rn-remote-debugger/releases/latest) から最新 DMG をダウンロード：
+
+| Mac | ファイル |
+| --- | --- |
+| Apple Silicon（M1/M2/M3/M4） | `RN-Remote-Debugger-<version>-arm64.dmg` |
+| Intel | `RN-Remote-Debugger-<version>.dmg` |
+
+**初回起動（1 回のみ）**：DMG は未署名のため、macOS Gatekeeper が初回起動をブロックします。
+
+1. DMG を開き、**RN Remote Debugger** を `Applications` フォルダにドラッグ。
+2. 同じ DMG 内の **首次启动修复.command** をダブルクリック。macOS がブロックした場合は **右クリック → 開く → 確認**。
+3. 以降は通常通りダブルクリックで起動できます。
+
+<details>
+<summary>コマンドライン派の方へ</summary>
+
+```bash
+xattr -cr "/Applications/RN Remote Debugger.app"
+```
+
+</details>
 
 ### ステップ 2：npm パッケージをインストール
 

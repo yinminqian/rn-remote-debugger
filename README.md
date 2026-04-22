@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/rn-remote-debugger"><img src="https://img.shields.io/npm/v/rn-remote-debugger?color=5865F2&style=flat-square" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/rn-remote-debugger"><img src="https://img.shields.io/npm/dm/rn-remote-debugger?color=5865F2&style=flat-square" alt="npm downloads"></a>
-  <a href="https://github.com/niceyoo/rn-remote-debugger/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License"></a>
+  <a href="https://github.com/yinminqian/rn-remote-debugger/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License"></a>
 </p>
 
 <p align="center">
@@ -31,7 +31,27 @@ Since React Native adopted the Hermes engine, React Native Debugger is no longer
 
 ### Step 1: Download Desktop App
 
-Download and install the DMG from [Releases](https://github.com/niceyoo/rn-remote-debugger/releases).
+Grab the latest DMG from the [Releases page](https://github.com/yinminqian/rn-remote-debugger/releases/latest):
+
+| Mac | File |
+| --- | --- |
+| Apple Silicon (M1/M2/M3/M4) | `RN-Remote-Debugger-<version>-arm64.dmg` |
+| Intel | `RN-Remote-Debugger-<version>.dmg` |
+
+**First launch (one-time):** the DMG is not code-signed, so macOS Gatekeeper will block it the first time.
+
+1. Open the DMG → drag **RN Remote Debugger** to the `Applications` folder.
+2. Double-click **首次启动修复.command** (bundled inside the same DMG). If macOS blocks it, right-click → **Open** → confirm once.
+3. You can now launch the app normally.
+
+<details>
+<summary>Prefer the command line?</summary>
+
+```bash
+xattr -cr "/Applications/RN Remote Debugger.app"
+```
+
+</details>
 
 ### Step 2: Install npm package
 

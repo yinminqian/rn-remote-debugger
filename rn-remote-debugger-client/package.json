@@ -1,6 +1,6 @@
 {
   "name": "rn-remote-debugger-app",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Remote Console Debugger for React Native",
   "main": "main.cjs",
   "type": "module",
@@ -48,18 +48,25 @@
       "contents": [
         {
           "x": 130,
-          "y": 220
+          "y": 180
         },
         {
           "x": 410,
-          "y": 220,
+          "y": 180,
           "type": "link",
           "path": "/Applications"
+        },
+        {
+          "x": 270,
+          "y": 380,
+          "type": "file",
+          "path": "build/Fix.command",
+          "name": "首次启动修复.command"
         }
       ],
       "window": {
         "width": 540,
-        "height": 380
+        "height": 500
       }
     },
     "win": {
