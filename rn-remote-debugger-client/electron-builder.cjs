@@ -7,7 +7,13 @@ module.exports = {
     output: 'release',
     buildResources: 'build',
   },
-  files: ['main.cjs', 'preload.cjs', 'dist/**/*', 'package.json'],
+  files: [
+    'main.cjs',
+    'preload.cjs',
+    'mcp-server.mjs',
+    'dist/**/*',
+    'package.json',
+  ],
   extraFiles: [],
   mac: {
     category: 'public.app-category.developer-tools',
