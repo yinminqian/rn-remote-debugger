@@ -1,6 +1,6 @@
 {
   "name": "rn-remote-debugger-app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Remote Console Debugger for React Native",
   "main": "main.cjs",
   "type": "module",
@@ -84,7 +84,7 @@
     },
     "publish": {
       "provider": "github",
-      "owner": "your-username",
+      "owner": "yinminqian",
       "repo": "rn-remote-debugger"
     }
   },
