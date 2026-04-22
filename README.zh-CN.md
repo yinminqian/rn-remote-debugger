@@ -96,6 +96,34 @@ initRemoteDebugger({})
 
 ---
 
+## AI 调试（MCP）
+
+桌面应用内置了一个本地 **MCP（Model Context Protocol）** 端点，Claude Code（或任何支持 MCP 的客户端）可以直接读取 RN 的日志和网络请求 —— 再也不用把 curl 命令或日志截图贴到聊天里了。
+
+调试器运行时端点就在线（默认 `http://localhost:8989/mcp`；端口被占会自动往后递增 —— 点标题栏上的 **MCP** 按钮可以一键复制实际地址）。
+
+### 添加到 Claude Code
+
+```bash
+claude mcp add rn-debug --transport http http://localhost:8989/mcp
+```
+
+### 可用工具
+
+| 工具 | 用途 |
+| --- | --- |
+| `list_network_requests` | 最近请求摘要 —— 支持 `method` / `urlPattern` / `status` / `since` 过滤 |
+| `get_network_request` | 单条请求完整详情：headers + 请求体 + 响应体 |
+| `list_console_logs` | 最近 console 日志 —— 支持 `level` / `textPattern` / `since` 过滤 |
+| `search` | 跨日志与请求做大小写无关子串搜索 |
+| `clear` | 清空所有缓冲 |
+
+现在可以直接问 Claude：**"最近一次失败的请求是什么？"**、**"把最新那个 `/login` 的返回值打出来"**、**"给我看过去一分钟的 error 日志"**，它会自己去拉数据。
+
+> 数据只在桌面应用运行期间存在；环形缓冲区保留最近约 200 条请求和 500 条日志。
+
+---
+
 ## 平台注意事项
 
 ### Android

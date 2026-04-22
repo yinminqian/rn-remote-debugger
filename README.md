@@ -96,6 +96,34 @@ Done! The debugger will automatically connect.
 
 ---
 
+## AI Debugging via MCP
+
+The desktop app exposes a local **MCP (Model Context Protocol)** endpoint so Claude Code (or any MCP-compatible client) can read your RN logs and network requests directly — no more copy-pasting curl commands or log screenshots into a chat.
+
+The endpoint is live whenever the debugger is running (default `http://localhost:8989/mcp`; if the port is in use it auto-increments — click the **MCP** button in the title bar to copy the actual URL).
+
+### Add to Claude Code
+
+```bash
+claude mcp add rn-debug --transport http http://localhost:8989/mcp
+```
+
+### Available tools
+
+| Tool | Purpose |
+| --- | --- |
+| `list_network_requests` | Recent request summaries — filter by `method` / `urlPattern` / `status` / `since` |
+| `get_network_request` | Full detail of one request: headers + request body + response body |
+| `list_console_logs` | Recent console logs — filter by `level` / `textPattern` / `since` |
+| `search` | Case-insensitive substring search across logs and requests |
+| `clear` | Clear all buffers |
+
+Now you can ask Claude things like *"what was the last failed request?"*, *"dump the response body of the latest `/login` call"*, or *"show error logs from the last minute"* and it pulls the data itself.
+
+> Data only lives while the desktop app is running — the ring buffers hold the most recent ~200 requests and ~500 log entries.
+
+---
+
 ## Platform Notes
 
 ### Android

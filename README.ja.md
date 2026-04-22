@@ -96,6 +96,34 @@ initRemoteDebugger({})
 
 ---
 
+## MCP による AI デバッグ
+
+デスクトップアプリはローカル **MCP（Model Context Protocol）** エンドポイントを提供しており、Claude Code などの MCP 対応クライアントから RN のログ・ネットワークリクエストを直接読み取れます。curl やログのスクリーンショットをチャットに貼り付ける必要はもうありません。
+
+デバッガー起動中にエンドポイントが有効になります（デフォルト `http://localhost:8989/mcp`；ポートが使用中の場合は自動的に +1 されます。タイトルバーの **MCP** ボタンを押すと実際の URL をコピー可能）。
+
+### Claude Code に追加
+
+```bash
+claude mcp add rn-debug --transport http http://localhost:8989/mcp
+```
+
+### 利用可能なツール
+
+| ツール | 用途 |
+| --- | --- |
+| `list_network_requests` | 最近のリクエスト概要 —— `method` / `urlPattern` / `status` / `since` でフィルタ |
+| `get_network_request` | 単一リクエストの詳細：headers + リクエストボディ + レスポンスボディ |
+| `list_console_logs` | 最近の console ログ —— `level` / `textPattern` / `since` でフィルタ |
+| `search` | ログとリクエストを横断した大文字小文字を区別しないサブストリング検索 |
+| `clear` | すべてのバッファをクリア |
+
+Claude に **「最後に失敗したリクエストは？」**、**「最新の `/login` のレスポンスを見せて」**、**「直近 1 分の error ログを出して」** のように聞けば、自分でデータを取得します。
+
+> データはデスクトップアプリの起動中のみ保持され、リングバッファは最新約 200 件のリクエストと 500 件のログを保持します。
+
+---
+
 ## プラットフォーム別の注意事項
 
 ### Android
