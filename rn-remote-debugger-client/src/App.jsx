@@ -76,6 +76,12 @@ function App() {
           handleNetwork(data);
         } else if (data.channel === 'console') {
           handleConsole(data);
+        } else if (data.channel === 'session' && data.type === 'start') {
+          // RN 新会话（reload 或首次启动），清空旧数据
+          setNetworkRequests([]);
+          setSelectedRequest(null);
+          setSearchText('');
+          console.clear();
         }
       } catch (e) {
         console.error('Parse error:', e);
@@ -122,10 +128,11 @@ function App() {
     consoleMethod(...data.args);
   };
 
-  const clearNetwork = () => {
+  const clearAll = () => {
     setNetworkRequests([]);
     setSelectedRequest(null);
     setSearchText('');
+    console.clear();
   };
 
   const generateCurl = (req) => {
@@ -569,10 +576,9 @@ function App() {
                     <Button
                       icon={<ClearOutlined />}
                       size="small"
-                      onClick={clearNetwork}
-                      disabled={networkRequests.length === 0}
+                      onClick={clearAll}
                     >
-                      Clear
+                      Clear All
                     </Button>
                   </div>
                 </Space>

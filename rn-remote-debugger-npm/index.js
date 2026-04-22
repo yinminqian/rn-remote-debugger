@@ -82,13 +82,36 @@ const setupNetworkInterceptor = () => {
     });
   };
 
+  // 将 Headers 实例 / 数组 / 普通对象统一序列化为普通对象
+  const normalizeHeaders = (headers) => {
+    if (!headers) return {};
+    if (typeof headers.forEach === 'function' && !Array.isArray(headers)) {
+      const result = {};
+      headers.forEach((value, key) => {
+        result[key] = value;
+      });
+      return result;
+    }
+    if (Array.isArray(headers)) {
+      return Object.fromEntries(headers);
+    }
+    return { ...headers };
+  };
+
   // 拦截 fetch
   const originalFetch = global.fetch;
   global.fetch = function (...args) {
     const startTime = Date.now();
-    const url = typeof args[0] === 'string' ? args[0] : args[0].url;
+    const input = args[0];
+    const url = typeof input === 'string' ? input : input.url;
     const options = args[1] || {};
-    const method = options.method || 'GET';
+    const method = options.method || (typeof input === 'object' && input.method) || 'GET';
+
+    // 合并 Request 对象自带的 headers 和 options.headers
+    const requestHeaders = {
+      ...(typeof input === 'object' ? normalizeHeaders(input.headers) : {}),
+      ...normalizeHeaders(options.headers),
+    };
 
     const requestId = `${Date.now()}-${Math.random()}`;
 
@@ -97,7 +120,7 @@ const setupNetworkInterceptor = () => {
       id: requestId,
       url,
       method,
-      headers: options.headers || {},
+      headers: requestHeaders,
       body: options.body,
       timestamp: new Date().toISOString()
     });
@@ -156,6 +179,21 @@ const setupNetworkInterceptor = () => {
       });
   };
 
+  // 解析 XHR 响应头字符串为对象
+  const parseResponseHeaders = (headerStr) => {
+    const headers = {};
+    if (!headerStr) return headers;
+    headerStr.split(/\r?\n/).forEach((line) => {
+      const idx = line.indexOf(':');
+      if (idx > 0) {
+        const key = line.slice(0, idx).trim();
+        const value = line.slice(idx + 1).trim();
+        if (key) headers[key] = value;
+      }
+    });
+    return headers;
+  };
+
   // 拦截 XMLHttpRequest
   const OriginalXHR = global.XMLHttpRequest;
   global.XMLHttpRequest = function () {
@@ -164,12 +202,19 @@ const setupNetworkInterceptor = () => {
     let url = '';
     let method = '';
     let startTime = 0;
+    const requestHeaders = {};
 
     const originalOpen = xhr.open;
     xhr.open = function (m, u, ...rest) {
       method = m;
       url = u;
       return originalOpen.apply(this, [m, u, ...rest]);
+    };
+
+    const originalSetRequestHeader = xhr.setRequestHeader;
+    xhr.setRequestHeader = function (key, value) {
+      requestHeaders[key] = value;
+      return originalSetRequestHeader.apply(this, arguments);
     };
 
     const originalSend = xhr.send;
@@ -181,7 +226,7 @@ const setupNetworkInterceptor = () => {
         id: requestId,
         url,
         method,
-        headers: {},
+        headers: requestHeaders,
         body,
         timestamp: new Date().toISOString()
       });
@@ -198,7 +243,7 @@ const setupNetworkInterceptor = () => {
         url,
         status: xhr.status,
         statusText: xhr.statusText,
-        headers: {},
+        headers: parseResponseHeaders(xhr.getAllResponseHeaders && xhr.getAllResponseHeaders()),
         body: xhr.responseText,
         duration,
         timestamp: new Date().toISOString()
@@ -228,6 +273,17 @@ const connect = (port = 8989, host = 'localhost') => {
 
     ws.onopen = () => {
       originalConsole.log(`[RN Remote Debugger] ✅ Connected to ${host}:${port}`);
+
+      // 通知客户端 RN 是一次新会话（reload 或首次启动），让客户端清空旧数据
+      try {
+        ws.send(JSON.stringify({
+          channel: 'session',
+          type: 'start',
+          timestamp: new Date().toISOString()
+        }));
+      } catch (e) {
+        // 忽略发送失败
+      }
 
       while (messageQueue.length > 0) {
         const msg = messageQueue.shift();
