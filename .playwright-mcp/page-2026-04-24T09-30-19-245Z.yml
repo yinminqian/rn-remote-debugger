@@ -1,0 +1,95 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: Remote Console Debugger
+      - radiogroup "segmented control" [ref=e7]:
+        - generic [ref=e8]:
+          - generic [ref=e9] [cursor=pointer]:
+            - radio "api Network 8" [checked]
+            - generic [ref=e11]:
+              - img "api" [ref=e12]:
+                - img [ref=e13]
+              - text: Network
+              - generic [ref=e15]: "8"
+          - generic [ref=e16] [cursor=pointer]:
+            - radio "console-sql Console 5"
+            - generic [ref=e18]:
+              - img "console-sql" [ref=e19]:
+                - img [ref=e20]
+              - text: Console
+              - generic [ref=e24]: "5"
+      - generic [ref=e25]:
+        - img "link" [ref=e26]:
+          - img [ref=e27]
+        - button "MCP" [ref=e29] [cursor=pointer]:
+          - generic [ref=e30]: MCP
+        - button "clear" [ref=e31] [cursor=pointer]:
+          - img "clear" [ref=e33]:
+            - img [ref=e34]
+        - button "android" [ref=e36] [cursor=pointer]:
+          - img "android" [ref=e38]:
+            - img [ref=e39]
+        - button "code" [ref=e41] [cursor=pointer]:
+          - img "code" [ref=e43]:
+            - img [ref=e44]
+    - generic [ref=e47]:
+      - generic [ref=e51]:
+        - generic [ref=e52]:
+          - generic [ref=e53]:
+            - generic [ref=e54]: Network
+            - generic [ref=e55]: "8"
+          - button "Clear" [ref=e56] [cursor=pointer]
+        - generic [ref=e58]:
+          - img "search":
+            - img
+          - textbox "Filter requests…" [ref=e59]
+        - generic [ref=e60]:
+          - generic [ref=e61] [cursor=pointer]:
+            - generic [ref=e63]: /v2/users/me
+            - generic [ref=e64]: 30s
+          - generic [ref=e65] [cursor=pointer]:
+            - generic [ref=e67]: /v2/measurements/bp
+            - generic [ref=e68]: 3m
+          - generic [ref=e69] [cursor=pointer]:
+            - generic [ref=e71]: /v2/sync/pending
+            - generic [ref=e72]: 8m
+          - generic [ref=e73] [cursor=pointer]:
+            - generic [ref=e75]: /v2/auth/refresh
+            - generic [ref=e76]: 16m
+          - generic [ref=e77] [cursor=pointer]:
+            - generic [ref=e79]: /banner/home.png
+            - generic [ref=e80]: 27m
+          - generic [ref=e81] [cursor=pointer]:
+            - generic [ref=e83]: /v2/users/42/profile
+            - generic [ref=e84]: 42m
+          - generic [ref=e85] [cursor=pointer]:
+            - generic [ref=e87]: /v2/sessions/old
+            - generic [ref=e88]: 51m
+          - generic [ref=e89] [cursor=pointer]:
+            - generic [ref=e91]: /events
+            - generic [ref=e92]: 2h
+      - separator [ref=e93]
+      - main [ref=e97]:
+        - generic [ref=e99]:
+          - img "No data" [ref=e101]
+          - generic [ref=e107]: Select a network request to view details
+  - generic [ref=e108]:
+    - dialog "Android 设备连接提示":
+      - generic [ref=e109]:
+        - button "Close" [active] [ref=e110] [cursor=pointer]:
+          - generic "Close" [ref=e111]:
+            - img "close" [ref=e112]:
+              - img [ref=e113]
+        - generic [ref=e116]: Android 设备连接提示
+        - generic [ref=e118]:
+          - paragraph [ref=e119]: 如果 Android 设备无法连接，请在终端执行以下命令：
+          - textbox [ref=e120]: adb reverse tcp:8989 tcp:8989
+          - button "copy 复制命令" [ref=e121] [cursor=pointer]:
+            - img "copy" [ref=e123]:
+              - img [ref=e124]
+            - generic [ref=e126]: 复制命令
+        - generic [ref=e127]:
+          - button "关 闭" [ref=e128] [cursor=pointer]:
+            - generic [ref=e129]: 关 闭
+          - button "知道了" [ref=e130] [cursor=pointer]:
+            - generic [ref=e131]: 知道了

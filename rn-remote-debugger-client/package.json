@@ -7,6 +7,9 @@
   "scripts": {
     "dev": "vite",
     "start": "electron .",
+    "dev:all": "node scripts/dev.cjs",
+    "restart": "node scripts/dev.cjs",
+    "kill": "pkill -f 'node_modules/\\.bin/vite' 2>/dev/null; pkill -f 'Electron\\.app/Contents/MacOS/Electron' 2>/dev/null; true",
     "build": "vite build",
     "pack": "electron-builder --dir",
     "dist": "npm run build && electron-builder",
@@ -29,6 +32,8 @@
     "@microlink/react-json-view": "^1.27.1",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "antd": "^6.2.1",
+    "console-feed": "^3.8.0",
+    "lucide-react": "^1.9.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-resizable-panels": "^4.4.1",

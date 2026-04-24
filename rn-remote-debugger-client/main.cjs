@@ -161,15 +161,16 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.cjs')
     },
     titleBarStyle: 'hidden',
+    // 红绿灯手动定位到 titlebar 卡片垂直中线。
+    // 窗口外层 padding 10px + 卡片高 44px → 卡片垂直中心在 window-y = 32；
+    // 红绿灯按钮高 ~14px，所以 y = 32 - 7 ≈ 25；x 给卡片左边缘留 ~10px 内边距。
+    trafficLightPosition: { x: 20, y: 25 },
+    backgroundColor: '#0a0a0d',
     title: 'Remote Console Debugger'
   });
 
-  mainWindow.loadURL(VITE_DEV_SERVER);
-  mainWindow.webContents.openDevTools();
-
   if (isDev) {
     mainWindow.loadURL(VITE_DEV_SERVER);
-    mainWindow.webContents.openDevTools();
   } else {
     mainWindow.loadFile(path.join(__dirname, 'dist/index.html'));
   }

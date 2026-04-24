@@ -4,6 +4,184 @@
   box-sizing: border-box;
 }
 
+/* ─── Theme tokens (CSS variables) ────────────────────────────────
+ * 所有组件内联颜色通过 var(--xxx) 引用这里，切换 html[data-theme]
+ * 即可整套皮肤跟随。dark 写在 :root 作为默认，light 覆盖。 */
+:root {
+  /* 背景面 */
+  --bg-base: #0a0a0d;
+  --bg-panel: #18181b;
+  --bg-card: rgba(23, 23, 26, 0.62);
+  /* Network 列：比其它卡片更不透明，便于与 Details / Console 区分 */
+  --bg-card-network: rgba(180, 30, 30, 0.03);
+  --bg-elevated: #1e1e22;
+  --bg-input: #26262b;
+
+  /* 可交互面 / 边框（低 alpha，白色调） */
+  --surface-03: rgba(255,255,255,0.03);
+  --surface-04: rgba(255,255,255,0.04);
+  --surface-06: rgba(255,255,255,0.06);
+  --surface-08: rgba(255,255,255,0.08);
+  --surface-10: rgba(255,255,255,0.10);
+  --surface-15: rgba(255,255,255,0.15);
+
+  /* 文本层级 */
+  --fg-primary: #fafafa;
+  --fg-secondary: #e4e4e7;
+  --fg-tertiary: #a1a1aa;
+  --fg-muted: #71717a;
+  --fg-subtle: #52525b;
+  --fg-faint: #3f3f46;
+  --fg-log: #d4d4d8;
+
+  /* 强调 / 语义色 */
+  --accent: #60a5fa;
+  --status-success: #22c55e;
+  --status-success-alt: #34d399;
+  --status-warn: #eab308;
+  --status-warn-dot: #fbbf24;
+  --status-error: #f87171;
+  --status-error-soft: #fecaca;
+  --status-error-ring: rgba(248,113,113,0.45);
+  --status-error-wash: rgba(248,113,113,0.18);
+
+  /* console 级别色 */
+  --level-log-fg: #d4d4d8;
+  --level-log-bg: transparent;
+  --level-log-tag: #71717a;
+  --level-info-fg: #93c5fd;
+  --level-info-bg: rgba(96,165,250,0.07);
+  --level-info-tag: #60a5fa;
+  --level-warn-fg: #fde68a;
+  --level-warn-bg: rgba(251,191,36,0.07);
+  --level-warn-tag: #eab308;
+  --level-error-fg: #fecaca;
+  --level-error-bg: rgba(248,113,113,0.07);
+  --level-error-tag: #f87171;
+  --level-debug-fg: #c4b5fd;
+  --level-debug-bg: transparent;
+  --level-debug-tag: #a78bfa;
+
+  /* 搜索高亮 */
+  --highlight-fg: #fef3c7;
+  --highlight-bg: rgba(250,204,21,0.30);
+}
+
+html[data-theme="light"] {
+  /* 缝隙用浅灰调，卡片保留纯白 —— macOS Settings / Codex 的做法。
+   * 这样卡片之间的分隔感来自背景对比，而不是依赖描边。 */
+  --bg-base: #ececef;
+  --bg-panel: #f4f4f6;
+  --bg-card: rgba(255, 255, 255, 0.62);
+  --bg-card-network: rgba(220, 50, 50, 0.03);
+  --bg-elevated: #ffffff;
+  --bg-input: #f4f4f6;
+
+  --surface-03: rgba(0,0,0,0.03);
+  --surface-04: rgba(0,0,0,0.04);
+  --surface-06: rgba(0,0,0,0.05);
+  --surface-08: rgba(0,0,0,0.08);
+  --surface-10: rgba(0,0,0,0.10);
+  --surface-15: rgba(0,0,0,0.18);
+
+  --fg-primary: #1a1c1f;
+  --fg-secondary: #3f3f46;
+  --fg-tertiary: #52525b;
+  --fg-muted: #71717a;
+  --fg-subtle: #a1a1aa;
+  --fg-faint: #d4d4d8;
+  --fg-log: #52525b;
+
+  --accent: #339cff;
+  --status-success: #16a34a;
+  --status-success-alt: #16a34a;
+  --status-warn: #d97706;
+  --status-warn-dot: #d97706;
+  --status-error: #dc2626;
+  --status-error-soft: #b91c1c;
+  --status-error-ring: rgba(220,38,38,0.45);
+  --status-error-wash: rgba(220,38,38,0.10);
+
+  --level-log-fg: #52525b;
+  --level-log-bg: transparent;
+  --level-log-tag: #71717a;
+  --level-info-fg: #0369a1;
+  --level-info-bg: rgba(2,132,199,0.08);
+  --level-info-tag: #0284c7;
+  --level-warn-fg: #a16207;
+  --level-warn-bg: rgba(234,179,8,0.12);
+  --level-warn-tag: #a16207;
+  --level-error-fg: #b91c1c;
+  --level-error-bg: rgba(239,68,68,0.08);
+  --level-error-tag: #dc2626;
+  --level-debug-fg: #7c3aed;
+  --level-debug-bg: transparent;
+  --level-debug-tag: #7c3aed;
+
+  --highlight-fg: #713f12;
+  --highlight-bg: rgba(250,204,21,0.30);
+}
+
+html, body, #root {
+  background: var(--bg-base);
+  color: var(--fg-primary);
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, monospace;
+}
+
+/* 卡片容器：圆角 + 极淡描边 + 裁剪内部溢出，让内部内容（滚动条、列表项 hover）不超出圆角。
+ * 毛玻璃：--bg-card 用半透明色，配 backdrop-filter 把后面的内容模糊化；
+ * 窗口本身不透明时，这层起到的是"略微降亮 + 柔化对比"的效果。 */
+.card {
+  background: var(--bg-card);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--surface-06);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card--network-list {
+  background: var(--bg-card-network);
+  border: none;
+}
+
+/* Details / Console：圆角略小于默认 12px，与左侧 Network 块区分 */
+.card--side-panel {
+  border-radius: 9px;
+}
+
+/* 详情 Request/Response：卡片纵向等距，避免 Space size="large" 与卡片边距叠加导致上下缝看起来不一致 */
+.detail-tab-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.detail-tab-stack > .ant-card {
+  margin: 0;
+}
+
+/* 收紧 react-json-view 的行距，贴近 Chrome DevTools 的密度（默认太松散，
+ * 开发时密集日志一眼看不全）。只覆盖 .dense-json 作用域内的用法。 */
+.dense-json .react-json-view {
+  line-height: 1.45 !important;
+  font-size: 12px !important;
+}
+.dense-json .react-json-view .variable-row {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  line-height: 1.45 !important;
+}
+.dense-json .react-json-view .object-key-val,
+.dense-json .react-json-view .array-key-val {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+.dense-json .react-json-view .icon-container {
+  line-height: 1.45 !important;
+}
+
 /* Custom titlebar: whole bar is draggable except interactive children */
 .titlebar {
   -webkit-app-region: drag;
@@ -19,29 +197,42 @@
   app-region: no-drag;
 }
 
-/* 自定义滚动条样式 */
+/* 自定义滚动条 — shadcn/zinc 深色。
+ * Firefox 走 scrollbar-* 属性；Chromium / WebKit（包括 Electron）走 ::-webkit-* 伪元素。 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f5f5f5;
-  border-radius: 4px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d9d9d9;
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  border: 2px solid transparent;
+  background-clip: content-box;
   transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #bfbfbf;
+  background: rgba(255, 255, 255, 0.16);
+  background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:active {
-  background: #8c8c8c;
+  background: rgba(255, 255, 255, 0.24);
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 .ant-tabs {
@@ -64,7 +255,7 @@
 }
 
 .app {
-  font-family: 'Consolas', 'Monaco', monospace;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, monospace;
   background: #1e1e1e;
   color: #d4d4d4;
   height: 100vh;
@@ -235,49 +426,144 @@ button:hover {
   height: 100%;
 }
 
-/* react-resizable-panels Separator 拖动手柄样式 */
+/* react-resizable-panels Separator 拖动手柄样式
+ * 卡片之间的 10px 缝隙直接就是拖拽热区，默认透明，悬停/拖拽时才显现小指示条 */
 .resize-handle {
-  width: 6px;
-  background: #f0f0f0;
+  width: 10px;
+  background: transparent;
   cursor: col-resize;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease;
   position: relative;
   flex-shrink: 0;
 }
 
-.resize-handle:hover {
-  background: #e6f7ff;
-}
-
-/* 拖动激活状态 - 使用 data-separator 属性选择器 */
-.resize-handle:active,
-[data-separator].resize-handle[data-active="true"] {
-  background: #bae7ff;
-}
-
-/* 添加可视化的拖动指示器 */
 .resize-handle::after {
   content: '';
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 1px;
-  height: 40px;
-  background: #d9d9d9;
-  border-radius: 1px;
-  transition: all 0.2s ease;
+  width: 2px;
+  height: 32px;
+  background: transparent;
+  border-radius: 2px;
+  transition: background 0.2s ease, height 0.2s ease;
 }
 
 .resize-handle:hover::after {
-  background: #1890ff;
-  width: 2px;
-  height: 50px;
+  background: color-mix(in srgb, var(--accent) 60%, transparent);
+  height: 40px;
 }
 
 .resize-handle:active::after,
 [data-separator].resize-handle[data-active="true"]::after {
-  background: #1890ff;
-  width: 2px;
-  height: 50px;
+  background: var(--accent);
+  height: 48px;
+}
+
+/* 顶栏胶囊按钮：图标 + 文字，hover 时高亮背景。
+ * 与 shadcn 风格的 Manage / Light·Dark·System 控件一致。 */
+.pill-btn {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--surface-08);
+  background: transparent;
+  color: var(--fg-secondary);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  user-select: none;
+}
+
+.pill-btn:hover {
+  background: var(--surface-06);
+  border-color: var(--surface-15);
+  color: var(--fg-primary);
+}
+
+.pill-btn:active {
+  background: var(--surface-10);
+}
+
+.pill-btn .pill-btn__dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* Request Preview 浮层进出场动画：透明度 + 轻微缩放，
+ * 默认状态（未加 --open）就是"出场态"；加 --open 后淡入 + 回到原尺寸。
+ * transform 同时承担 translateY(-50%) 的垂直居中，不要在内联样式里再覆盖。 */
+.request-preview-wrap {
+  opacity: 0;
+  transform: translateY(-50%) scale(0.96);
+  transition: opacity 160ms ease, transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+.request-preview-wrap--open {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+
+/* Global message toast — match zinc dark theme (static message.xxx doesn't
+   inherit ConfigProvider, so we override via CSS). */
+.ant-message .ant-message-notice-content {
+  background: var(--bg-elevated);
+  color: var(--fg-primary);
+  border: 1px solid var(--surface-08);
+  border-radius: 8px;
+  padding: 9px 14px;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.45),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, monospace;
+  font-size: 13px;
+}
+
+html[data-theme="light"] .ant-message .ant-message-notice-content {
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.ant-message .ant-message-notice-content .ant-message-custom-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ant-message .ant-message-success .anticon { color: var(--status-success); }
+.ant-message .ant-message-error .anticon { color: var(--status-error); }
+.ant-message .ant-message-warning .anticon { color: var(--status-warn); }
+.ant-message .ant-message-info .anticon,
+.ant-message .ant-message-loading .anticon { color: var(--accent); }
+
+/* 浅色下的滚动条（webkit 伪元素对 CSS var 支持不稳定，用显式覆盖） */
+html[data-theme="light"] * {
+  scrollbar-color: rgba(0, 0, 0, 0.22) transparent;
+}
+html[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.18);
+  background-clip: content-box;
+}
+html[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.32);
+  background-clip: content-box;
+}
+html[data-theme="light"] ::-webkit-scrollbar-thumb:active {
+  background: rgba(0, 0, 0, 0.45);
+  background-clip: content-box;
 }
