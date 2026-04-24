@@ -1,6 +1,6 @@
 {
   "name": "rn-remote-debugger-app",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Remote Console Debugger for React Native",
   "main": "main.cjs",
   "type": "module",
