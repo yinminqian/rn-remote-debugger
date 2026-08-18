@@ -1,3 +1,5 @@
+
+
 <div align="center">
   <img src="readme/logo.png" width="120" alt="RN Remote Debugger" />
   <h1>RN Remote Debugger</h1>
@@ -79,6 +81,8 @@ if (__DEV__) {
   module.exports = {}
 }
 ```
+
+> If `rn-remote-debug.js` already exists, delete it first — `rn-remote-debugger-create` does not overwrite it.
 
 > **iOS Note**: Make sure the `host` matches your computer's IP address.
 
